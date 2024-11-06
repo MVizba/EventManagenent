@@ -27,7 +27,7 @@ class EventController extends AbstractController
     #[Route('/events/{id}/register', name: 'event_register')]
     public function register(Request $request, EntityManagerInterface $entityManager, Event $event): Response
     {
-        // Check if the event has reached the registration limit
+
         if (count($event->getRegisteredUsers()) >= $event->getRegistrationLimit()) {
             $this->addFlash('error', 'Event is full. No more registrations allowed.');
             return $this->redirectToRoute('events_list');
@@ -44,7 +44,7 @@ class EventController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'You have successfully registered for the event!');
-            return $this->redirectToRoute('events_list'); // Redirect after success
+            return $this->redirectToRoute('events_list');
         }
 
         return $this->render('event/register.html.twig', [

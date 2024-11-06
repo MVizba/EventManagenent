@@ -3,17 +3,11 @@
 {% block title %}Register for {{ event.eventName }}{% endblock %}
 
 {% block body %}
-    <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-        <div class="card p-4" style="width: 100%; max-width: 500px;">
+    <div class="container mt-5">
+        <div class="card p-4" style="max-width: 500px; width: 100%; margin: 0 auto;">
             <h1 class="mb-4 text-center">Register for {{ event.eventName }}</h1>
 
-            {% for error in form.name.vars.errors %}
-                <div class="alert alert-danger mt-3">
-                    {{ error.message }}
-                </div>
-            {% endfor %}
-
-            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+            {{ form_start(form) }}
 
             <div class="mb-3">
                 {{ form_label(form.name, 'Your Name', {'label_attr': {'class': 'form-label'}}) }}
