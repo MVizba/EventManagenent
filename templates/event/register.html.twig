@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register for {{ event.eventName }}{% endblock %}
+
+{% block body %}
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="card p-4" style="width: 100%; max-width: 500px;">
+            <h1 class="mb-4 text-center">Register for {{ event.eventName }}</h1>
+
+            {% for error in form.name.vars.errors %}
+                <div class="alert alert-danger mt-3">
+                    {{ error.message }}
+                </div>
+            {% endfor %}
+
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+            <div class="mb-3">
+                {{ form_label(form.name, 'Your Name', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.name) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.email, 'Your Email', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.email) }}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Register</button>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

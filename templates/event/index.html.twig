@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Events List{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="mb-4">Upcoming Events</h2>
+
+        <div class="row">
+            {% for event in events %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <strong>{{ event.eventName }}</strong>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">{{ event.description }}</p>
+                            <p><strong>Registration Limit:</strong> {{ event.registrationLimit }}</p>
+                            <a href="{{ path('event_register', { id: event.id }) }}" class="btn btn-success">Register</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
