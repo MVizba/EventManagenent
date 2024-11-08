@@ -2,7 +2,6 @@
 
 namespace App\Command;
 
-use App\Entity\User;
 use App\Entity\Event;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;

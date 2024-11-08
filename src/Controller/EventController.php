@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class EventController extends AbstractController
 {
-    #[Route('/events', name: 'events_list')]
+    #[Route('/', name: 'events_list')]
     public function index(EventRepository $eventRepository): Response
     {
         $events = $eventRepository->findAll();
@@ -24,7 +24,7 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/events/{id}/register', name: 'event_register')]
+    #[Route('/{id}/register', name: 'event_register')]
     public function register(Request $request, EntityManagerInterface $entityManager, Event $event): Response
     {
 
@@ -38,7 +38,18 @@ class EventController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Register the user for the event
+            $duplicateEmailFound = false;
+            foreach ($event->getRegisteredUsers() as $registeredUser) {
+                if ($registeredUser->getEmail() === $user->getEmail()) {
+                    $duplicateEmailFound = true;
+                    break;
+                }
+            }
+            if ($duplicateEmailFound) {
+                $this->addFlash('error', 'Email already registered.');
+                return $this->redirectToRoute('events_list');
+            }
+
             $event->addRegisteredUser($user);
             $entityManager->persist($user);
             $entityManager->flush();
@@ -53,7 +64,7 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/events/new', name: 'event_new')]
+    #[Route('/new', name: 'event_new')]
     public function new(Request $request,EntityManagerInterface $entityManager): Response
     {
         $event = new Event();
