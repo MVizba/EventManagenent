@@ -20,9 +20,9 @@ Preparation:
 Routes:
 run on localhost:8080/
 
-* /events route (events_list): Displays a list of all events.
-* /events/{id}/register route (event_register): Allows users to register for a specific event.
-* /events/new route (event_new): Provides a form to create a new event.
+* / route (events_list): Displays a list of all events.
+* /{id}/register route (event_register): Allows users to register for a specific event.
+* /new route (event_new): Provides a form to create a new event.
 
 Console:
 
