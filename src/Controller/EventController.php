@@ -19,8 +19,18 @@ class EventController extends AbstractController
     public function index(EventRepository $eventRepository): Response
     {
         $events = $eventRepository->findAll();
+
+        $eventsWithRegistrationsLeft = [];
+
+        foreach ($events as $event) {{
+            $registrationsLeft = @$eventRepository->getRegistrationsLeft($event);
+            @$eventsWithRegistrationsLeft[] = [
+                'event' => @$event,
+                'registrationsLeft' => $registrationsLeft,
+            ];
+        }}
         return $this->render('event/index.html.twig', [
-            'events' => $events,
+            'events' => $eventsWithRegistrationsLeft,
         ]);
     }
 

@@ -16,9 +16,16 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
-//    /**
-//     * @return Event[] Returns an array of Event objects
-//     */
+    public function getRegistrationsLeft(Event $event): int
+    {
+        $registeredCount = count($event->getRegisteredUsers());
+        $registrationLimit = $event->getRegistrationLimit();
+        return $registrationLimit - $registeredCount;
+    }
+
+    /**
+     * @return Event[] Returns an array of Event objects
+     */
 //    public function findByExampleField($value): array
 //    {
 //        return $this->createQueryBuilder('e')
