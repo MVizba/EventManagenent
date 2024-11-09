@@ -23,9 +23,9 @@ class EventController extends AbstractController
         $eventsWithRegistrationsLeft = [];
 
         foreach ($events as $event) {{
-            $registrationsLeft = @$eventRepository->getRegistrationsLeft($event);
-            @$eventsWithRegistrationsLeft[] = [
-                'event' => @$event,
+            $registrationsLeft = $eventRepository->getRegistrationsLeft($event);
+            $eventsWithRegistrationsLeft[] = [
+                'event' => $event,
                 'registrationsLeft' => $registrationsLeft,
             ];
         }}
@@ -37,29 +37,16 @@ class EventController extends AbstractController
     #[Route('/{id}/register', name: 'event_register')]
     public function register(Request $request, EntityManagerInterface $entityManager, Event $event): Response
     {
-
         if (count($event->getRegisteredUsers()) >= $event->getRegistrationLimit()) {
             $this->addFlash('error', 'Event is full. No more registrations allowed.');
             return $this->redirectToRoute('events_list');
         }
 
         $user = new User();
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UserType::class, $user, ['event' => $event]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $duplicateEmailFound = false;
-            foreach ($event->getRegisteredUsers() as $registeredUser) {
-                if ($registeredUser->getEmail() === $user->getEmail()) {
-                    $duplicateEmailFound = true;
-                    break;
-                }
-            }
-            if ($duplicateEmailFound) {
-                $this->addFlash('error', 'Email already registered.');
-                return $this->redirectToRoute('events_list');
-            }
-
             $event->addRegisteredUser($user);
             $entityManager->persist($user);
             $entityManager->flush();

@@ -18,7 +18,7 @@ class ListRegisteredUsersCommand extends Command
         $this->entityManager = $entityManager;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('app:list-registered-users')
             ->setDescription('Outputs a list of registered users grouped by event');

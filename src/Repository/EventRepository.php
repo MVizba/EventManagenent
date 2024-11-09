@@ -16,9 +16,22 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+    /**
+     * Skaiciuoti left registrracijas
+     *
+     * @param Event $event
+     * @return int
+     */
     public function getRegistrationsLeft(Event $event): int
     {
-        $registeredCount = count($event->getRegisteredUsers());
+        $queryBuilder = $this->createQueryBuilder('e')
+            ->select('COUNT(u.id)')
+            ->leftJoin('e.registeredUsers', 'u')
+            ->where('e.id = :eventId')
+            ->setParameter('eventId', $event->getId())
+            ->groupBy('e.id');
+
+        $registeredCount = (int) $queryBuilder->getQuery()->getSingleScalarResult();
         $registrationLimit = $event->getRegistrationLimit();
         return $registrationLimit - $registeredCount;
     }
