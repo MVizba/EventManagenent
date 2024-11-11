@@ -131,7 +131,8 @@ class Event
 
     public function isPassed(): bool
     {
-        return $this->eventDate !== null && $this->eventDate < new \DateTime();
+        $currentTime = (new \DateTime())->modify('+2 hours');
+        return $this->eventDate !== null && $this->eventDate < $currentTime;
     }
 
     public function getRegistrationsLeft(): int

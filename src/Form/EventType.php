@@ -70,10 +70,11 @@ class EventType extends AbstractType
 
             ->add('eventDate', DateTimeType::class, [
             'widget' => 'single_text',
+            'data' =>(new \DateTime())->modify('+2 hours'),
             'constraints' => [
                 new NotBlank(['message' => 'Event date cannot be empty.']),
                 new GreaterThan([
-                    'value' => 'now',
+                    'value' => (new \DateTime())->modify('+2 hours'),
                     'message' => 'Event date must be in the future'
                 ]),
             ],
