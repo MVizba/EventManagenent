@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\EventType;
 use App\Form\UserType;
 use App\Repository\EventRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,19 +23,19 @@ class EventController extends AbstractController
 
         $eventsWithRegistrationsLeft = [];
 
-        foreach ($events as $event) {{
+        foreach ($events as $event) {
             $eventsWithRegistrationsLeft[] = [
                 'event' => $event,
                 'registrationsLeft' => $event->getRegistrationsLeft(),
             ];
-        }}
+        }
         return $this->render('event/index.html.twig', [
             'events' => $eventsWithRegistrationsLeft,
         ]);
     }
 
     #[Route('/{id}/register', name: 'event_register')]
-    public function register(Request $request, EntityManagerInterface $entityManager, Event $event): Response
+    public function register(Request $request, EntityManagerInterface $entityManager, Event $event, UserRepository $userRepository): Response
     {
         if ($event->isPassed()){
             $this->addFlash('error', 'Registration is closed');
@@ -47,7 +48,10 @@ class EventController extends AbstractController
         }
 
         $user = new User();
-        $form = $this->createForm(UserType::class, $user, ['event' => $event]);
+        $form = $this->createForm(UserType::class, $user, [
+            'event' => $event,
+            'userRepository' => $userRepository,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

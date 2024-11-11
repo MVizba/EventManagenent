@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form;
 
 use App\Entity\User;
@@ -18,6 +20,7 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $event = $options['event'];
+        $userRepository = $options['userRepository'];
 
         $builder
             ->add('name', TextType::class,[
@@ -28,13 +31,10 @@ class UserType extends AbstractType
 
             ->add('email', EmailType::class,[
                 'constraints' => [
-                    new Callback(function ($email, ExecutionContextInterface $context) use ($event) {
-                        foreach ($event->getRegisteredUsers() as $registeredUser) {
-                            if ($registeredUser->getEmail() === $email) {
-                                $context->buildViolation('Email already exists.')
-                                    ->addViolation();
-                                return;
-                            }
+                    new Callback(function ($email, ExecutionContextInterface $context) use ($event, $userRepository) {
+                        if ($userRepository->checkForDuplicateEmailInEvent($email, $event)) {
+                            $context->buildViolation('This email is already registered.')
+                                ->addViolation();
                         }
                     }),
                 ],
@@ -49,6 +49,7 @@ class UserType extends AbstractType
         $resolver->setDefaults([
             'data_class' => User::class,
             'event' => null,
+            'userRepository' => null,
         ]);
     }
 }
