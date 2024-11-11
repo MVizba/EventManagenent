@@ -19,7 +19,7 @@ class EventController extends AbstractController
     #[Route('/', name: 'events_list')]
     public function index(EventRepository $eventRepository): Response
     {
-        $events = $eventRepository->findAll();
+        $events = $eventRepository->findAllOrderedByDate();
 
         $eventsWithRegistrationsLeft = [];
 
