@@ -23,10 +23,9 @@ class EventController extends AbstractController
         $eventsWithRegistrationsLeft = [];
 
         foreach ($events as $event) {{
-            $registrationsLeft = $eventRepository->getRegistrationsLeft($event);
             $eventsWithRegistrationsLeft[] = [
                 'event' => $event,
-                'registrationsLeft' => $registrationsLeft,
+                'registrationsLeft' => $event->getRegistrationsLeft(),
             ];
         }}
         return $this->render('event/index.html.twig', [
@@ -37,6 +36,11 @@ class EventController extends AbstractController
     #[Route('/{id}/register', name: 'event_register')]
     public function register(Request $request, EntityManagerInterface $entityManager, Event $event): Response
     {
+        if ($event->isPassed()){
+            $this->addFlash('error', 'Registration is closed');
+            return $this->redirectToRoute('events_list');
+        }
+
         if (count($event->getRegisteredUsers()) >= $event->getRegistrationLimit()) {
             $this->addFlash('error', 'Event is full. No more registrations allowed.');
             return $this->redirectToRoute('events_list');

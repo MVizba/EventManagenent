@@ -9,9 +9,12 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+
 
 class EventType extends AbstractType
 {
@@ -58,12 +61,25 @@ class EventType extends AbstractType
                     new Positive([
                         'message' => 'Registration limit must be greater than 0'
                         ]),
-
                 ],
                 'attr' => [
                     'min'=>1,
                     'placeholder' => 'Event registration limit',
                 ],
+            ])
+
+            ->add('eventDate', DateTimeType::class, [
+            'widget' => 'single_text',
+            'constraints' => [
+                new NotBlank(['message' => 'Event date cannot be empty.']),
+                new GreaterThan([
+                    'value' => 'now',
+                    'message' => 'Event date must be in the future'
+                ]),
+            ],
+            'attr' => [
+                'placeholder' => 'Select event date and a time',
+            ],
             ]);
     }
 

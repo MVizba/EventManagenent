@@ -5,6 +5,7 @@
 {% block body %}
     <div class="container mt-5">
         <h2 class="mb-4">Upcoming Events</h2>
+        <a href="{{ path('event_new') }}" class="btn btn-primary" style="margin-bottom: 20px;">Create New Event</a>
 
         <div class="row">
             {% for event in events %}
@@ -15,9 +16,17 @@
                         </div>
                         <div class="card-body">
                             <p class="card-text">{{ event.event.description }}</p>
+                            <p><strong>Event Date:</strong> {{ event.event.eventDate|date('Y-m-d H:i') }}</p>
                             <p><strong>Registration Limit:</strong> {{ event.event.registrationLimit }}</p>
                             <p><strong>Registrations Left:</strong> {{ event.registrationsLeft }}</p>
-                            <a href="{{ path('event_register', { id: event.event.id }) }}" class="btn btn-success">Register</a>
+
+                            {% if event.event.isPassed %}
+                                <p class="text-danger"><strong>Status:</strong> Finished</p>
+                                <button class="btn btn-secondary" disabled>Registration Closed</button>
+                            {% else %}
+                                <p class="text-success"><strong>Status:</strong> Upcoming</p>
+                                <a href="{{ path('event_register', { id: event.event.id }) }}" class="btn btn-success">Register</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

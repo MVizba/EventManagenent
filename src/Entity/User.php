@@ -65,7 +65,7 @@ class User
         return $this->event;
     }
 
-    public function setEvent(?Event $event): static
+    public function setEvent(?Event $event): self
     {
         $this->event = $event;
 

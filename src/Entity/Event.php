@@ -25,6 +25,10 @@ class Event
     #[ORM\Column]
     private ?int $registrationLimit = null;
 
+    #[ORM\Column(type: 'datetime', nullable: false)]
+    #[Assert\NotBlank(message: 'Event date cannot be empty.')]
+    private ?\DateTimeInterface $eventDate = null;
+
     /**
      * @var Collection<int, User>
      */
@@ -77,7 +81,7 @@ class Event
         return $this->registrationLimit;
     }
 
-    public function setRegistrationLimit(int $registrationLimit): static
+    public function setRegistrationLimit(int $registrationLimit): self
     {
         $this->registrationLimit = $registrationLimit;
 
@@ -102,7 +106,7 @@ class Event
         return $this;
     }
 
-    public function removeRegisteredUser(User $registeredUser): static
+    public function removeRegisteredUser(User $registeredUser): self
     {
         if ($this->registeredUsers->removeElement($registeredUser)) {
             // set the owning side to null (unless already changed)
@@ -113,4 +117,30 @@ class Event
 
         return $this;
     }
+
+    public function getEventDate(): ?\DateTimeInterface
+    {
+        return $this->eventDate;
+    }
+
+    public function setEventDate(\DateTimeInterface $eventDate): self
+    {
+        $this->eventDate = $eventDate;
+        return $this;
+    }
+
+    public function isPassed(): bool
+    {
+        return $this->eventDate !== null && $this->eventDate < new \DateTime();
+    }
+
+    public function getRegistrationsLeft(): int
+    {
+        $registeredCount = count($this->registeredUsers);
+        $registrationLimit = $this->registrationLimit ?? 0;
+
+        return $registrationLimit - $registeredCount;
+    }
+
+
 }

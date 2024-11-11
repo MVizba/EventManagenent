@@ -17,26 +17,6 @@ class EventRepository extends ServiceEntityRepository
     }
 
     /**
-     * Skaiciuoti left registrracijas
-     *
-     * @param Event $event
-     * @return int
-     */
-    public function getRegistrationsLeft(Event $event): int
-    {
-        $queryBuilder = $this->createQueryBuilder('e')
-            ->select('COUNT(u.id)')
-            ->leftJoin('e.registeredUsers', 'u')
-            ->where('e.id = :eventId')
-            ->setParameter('eventId', $event->getId())
-            ->groupBy('e.id');
-
-        $registeredCount = (int) $queryBuilder->getQuery()->getSingleScalarResult();
-        $registrationLimit = $event->getRegistrationLimit();
-        return $registrationLimit - $registeredCount;
-    }
-
-    /**
      * @return Event[] Returns an array of Event objects
      */
 //    public function findByExampleField($value): array
